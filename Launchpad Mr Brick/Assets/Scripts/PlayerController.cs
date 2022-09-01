@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
@@ -8,10 +10,18 @@ public class PlayerController : MonoBehaviour
     public float speed;
     public float accel = 0.5f;
     public float maxSpeed = 15f;
+    public GameObject gameWonPanel;
+    public GameObject pausePanel;
+    private bool isGameWon = false;
 
-  
     void Update()
     {
+        if(isGameWon == true)
+        {
+            return;
+        }
+
+
         if(speed < maxSpeed)
         {
             speed += accel * Time.deltaTime;
@@ -51,6 +61,13 @@ public class PlayerController : MonoBehaviour
         {
             rigidbody2D.constraints = RigidbodyConstraints2D.None;
         }
+       if (Input.GetKey(KeyCode.Escape))
+        {
+            pausePanel.SetActive(true);
+            isGameWon = true;
+        }
+
+       
       
 
     }
@@ -59,7 +76,16 @@ public class PlayerController : MonoBehaviour
         if (other.CompareTag("Door"))
         {
             Debug.Log("Level Completed!");
+            gameWonPanel.SetActive(true);
+            isGameWon = true;
         }
        
     }
+
+    public void ResumeGame()
+    {
+        pausePanel.SetActive(false);
+        isGameWon = false;
+    }
+   
 }
