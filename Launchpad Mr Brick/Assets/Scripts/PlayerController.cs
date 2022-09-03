@@ -3,29 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
     public Rigidbody2D rigidbody2D;
     public float speed;
-    public float accel = 0.5f;
-    public float maxSpeed = 15f;
+  
     public GameObject gameWonPanel;
+    public GameObject gameLostPanel;
     public GameObject pausePanel;
-    private bool isGameWon = false;
+    private bool isGameOver = false;
 
     void Update()
     {
-        if(isGameWon == true)
+        if(isGameOver == true)
         {
             return;
         }
 
 
-        if(speed < maxSpeed)
-        {
-            speed += accel * Time.deltaTime;
-        }
+  
 
         if(Input.GetAxis("Horizontal") > 0)
         {
@@ -64,7 +62,7 @@ public class PlayerController : MonoBehaviour
        if (Input.GetKey(KeyCode.Escape))
         {
             pausePanel.SetActive(true);
-            isGameWon = true;
+            isGameOver = true;
         }
 
        
@@ -77,15 +75,32 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("Level Completed!");
             gameWonPanel.SetActive(true);
-            isGameWon = true;
+            isGameOver = true;
         }
-       
+
+     
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Enemy")
+        {
+            gameLostPanel.SetActive(true);
+            isGameOver = true;
+        }
+    }
+
+
 
     public void ResumeGame()
     {
         pausePanel.SetActive(false);
-        isGameWon = false;
+        isGameOver = false;
     }
    
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(1);
+    }
+
 }
